@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  frontend:
+    image: node:22
+    working_dir: /app/microrack-snapshot
+    command: npm run dev -- --host
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./app:/app
+      - ./microrack_modules_library:/app/microrack-snapshot/public/modules:ro

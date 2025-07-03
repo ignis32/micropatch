@@ -1,0 +1,59 @@
+{
+  "name": "equalizer",
+  "slug": "mod-eq",
+  "unitsWidth": 7,
+  "legsPattern": null,
+  "shortDescription": "3-band single channel equalizer module with low, mid, high frequency level controls",
+  "inputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+            {
+          "x": 0.22,
+          "y": 0.04
+        },
+        {
+          "x": 0.22,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+           {
+          "x": 0.78,
+          "y": 0.04
+        },
+        {
+          "x": 0.78,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "MID",
+      "description": null,
+      "x": 0.5,
+      "y": 0.57
+    },
+    {
+      "title": "HIGH",
+      "description": null,
+      "x": 0.5,
+      "y": 0.32
+    },
+    {
+      "title": "LOW",
+      "description": null,
+      "x": 0.5,
+      "y": 0.8
+    }
+  ]
+}

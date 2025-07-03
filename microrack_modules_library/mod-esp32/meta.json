@@ -1,0 +1,89 @@
+{
+  "name": "midi\u2192cv (esp32)",
+  "slug": "mod-esp32",
+  "unitsWidth": 14,
+  "legsPattern": "pp__________pp",
+  "shortDescription": "developer friendly microcontroller module with midi input and oscilloscope open-source firmware out of the box ",
+  "inputs": [
+    {
+      "title": "IN 1",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.17,
+          "y": 0.10
+        }
+      ]
+    },
+    {
+      "title": "IN 2",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.23,
+          "y": 0.10
+        }
+      ]
+    },
+    {
+      "title": "TYPE C (DATA)",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.12
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "MIDI GATE",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.4
+        }
+      ]
+    },
+    {
+      "title": "MIDI CC",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.5
+        }
+      ]
+    },
+    {
+      "title": "MIDI MOD",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.6
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "ENCODER",
+      "description": null,
+      "x": 0.7,
+      "y": 0.87
+    }
+  ],
+    
+  "switches": [
+    {
+      "title": "FUNCTION",
+      "x": 0.367,
+      "y": 0.87,
+      "description": null
+       
+    }
+  ]
+}

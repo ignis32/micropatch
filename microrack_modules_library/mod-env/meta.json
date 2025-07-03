@@ -1,0 +1,113 @@
+{
+  "name": "envelope",
+  "slug": "mod-env",
+  "unitsWidth": 8,
+  "legsPattern": null,
+  "shortDescription": "envelope generator with rise and fall control, sustain AR and no-sustain AD modes, rise and fall modulation",
+  "inputs": [
+    {
+      "title": "GATE",
+      "description": null,
+      "pins": [
+              {
+          "x": 0.20,
+          "y": 0.06
+        },
+        {
+          "x": 0.20,
+          "y": 0.10
+        }
+      ]
+    },
+    {
+      "title": "RISE",
+      "description": null,
+      "pins": [
+              {
+          "x": 0.32,
+          "y": 0.04
+        },
+        {
+          "x": 0.32,
+          "y": 0.08
+        }
+      ]
+    },
+    {
+      "title": "FALL",
+      "description": null,
+      "pins": [
+             {
+          "x": 0.44,
+          "y": 0.06
+        },
+        {
+          "x": 0.44,
+          "y": 0.10
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "RESET",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.92,
+          "y": 0.26
+        },
+           {
+          "x": 0.92,
+          "y": 0.30
+        }
+      ]
+    },
+    {
+      "title": "ENVELOPE",
+      "description": null,
+      "pins": [
+              {
+          "x": 0.68,
+          "y": 0.04
+        },
+           {
+          "x": 0.68,
+          "y": 0.08
+        },
+
+        {
+          "x": 0.80,
+          "y": 0.04
+        },
+           {
+          "x": 0.80,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "RISE",
+      "x": 0.5,
+      "y": 0.56,
+      "description": null
+    },
+    {
+      "title": "FALL",
+      "x": 0.5,
+      "y": 0.8,
+      "description": null
+    }],
+    
+  "switches": [
+    {
+      "title": "SUSTAIN",
+      "x": 0.5,
+      "y": 0.3,
+      "description": null
+       
+    }
+  ]
+}

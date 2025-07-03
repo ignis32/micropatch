@@ -1,0 +1,3 @@
+*.png
+*.svg
+app/microrack-snapshot/node_modules

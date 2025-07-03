@@ -1,0 +1,81 @@
+{
+  "name": "saturator",
+  "slug": "mod-sat",
+  "unitsWidth": 7,
+  "legsPattern": null,
+  "shortDescription": "Saturator/distortion module with manual and CV control over bias, adjustable drive, and output level.",
+  "inputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+           {
+          "x": 0.22,
+          "y": 0.05
+        },
+        {
+          "x": 0.22,
+          "y": 0.11
+        }
+      ]
+    },
+    {
+      "title": "BIAS",
+      "description": null,
+      "pins": [
+           {
+          "x": 0.37,
+          "y": 0.03
+        },
+        {
+          "x": 0.37,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.65,
+          "y": 0.05
+        },
+                {
+          "x": 0.65,
+          "y": 0.11
+        },
+                {
+          "x": 0.77,
+          "y": 0.05
+        },
+          {
+          "x": 0.77,
+          "y": 0.11
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "BIAS",
+      "description": null,
+      "x": 0.5,
+      "y": 0.33
+    },
+    {
+      "title": "DRIVE",
+      "description": null,
+      "x": 0.5,
+      "y": 0.57
+    },
+    {
+      "title": "LEVEL",
+      "description": null,
+      "x": 0.5,
+      "y": 0.80
+    }
+  ]
+}

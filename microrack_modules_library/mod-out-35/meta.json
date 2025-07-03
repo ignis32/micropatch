@@ -1,0 +1,60 @@
+{
+  "name": "audio out 3.5",
+  "slug": "mod-out-35",
+  "unitsWidth": 8,
+  "legsPattern": "pp____pp",
+  "shortDescription": "3.5 mm audio mono/stereo output with HQ headphone amplifier and small speaker, output level control",
+  "inputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.12
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.15,
+          "y": 0.88
+        }
+      ]
+    },
+    {
+      "title": "3.5MM JACK",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.85,
+          "y": 0.88
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "VOLUME",
+      "description": null,
+      "x": 0.5,
+      "y": 0.65
+    }
+  ]
+  ,
+    
+  "switches": [
+    {
+      "title": "MONOSTEREO",
+      "x": 0.5,
+      "y": 0.9,
+      "description": null
+       
+    }
+  ]
+}

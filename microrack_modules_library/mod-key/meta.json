@@ -1,0 +1,63 @@
+{
+  "name": "stylus keyboard",
+  "slug": "mod-key",
+  "unitsWidth": 7,
+  "legsPattern": null,
+  "shortDescription": "1-octave stylus keyboard with gate outputs and CV with 1V per octave. aliator-clip wire coms with the module as a stylus ",
+  "inputs": [
+    {
+      "title": "PITCH",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.5
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "+5 STYLUS",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.22,
+          "y": 0.89
+        },
+        {
+          "x": 0.22,
+          "y": 0.95
+        }
+      ]
+    },
+    {
+      "title": "GATE",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.65,
+          "y": 0.04
+        },
+         {
+          "x": 0.65,
+          "y": 0.08
+        }
+      ]
+    },
+    {
+      "title": "CV",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.77,
+          "y": 0.06
+        },        {
+          "x": 0.77,
+          "y": 0.10
+        }
+      ]
+    }
+  ],
+  "knobs": []
+}
