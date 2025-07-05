@@ -12,6 +12,7 @@ import {
   BREADBOARD_CELL_SIZE,
   BREADBOARD_MARGIN
 } from './breadboardConfig';
+import { loadImageDimensions, calculateModuleHeight } from './utils/imageLoader';
 
 declare global {
   interface Window {
@@ -283,8 +284,10 @@ export default function App() {
           }
         }
         // --- End overlap validation ---
+        // Check bottom rows instead of top rows (for bottom-aligned modules)
         for (let rowOffset = 0; rowOffset < 2; rowOffset++) {
-          const row = layout[rowOffset];
+          const rowIndex = layout.length - 2 + rowOffset; // Bottom two rows
+          const row = layout[rowIndex];
           if (!row) { valid = false; break; }
           for (let i of pinOffsets) {
             if (x + i >= row.length) { valid = false; break; }
@@ -308,20 +311,28 @@ export default function App() {
   };
 
   // Add module to selected breadboard (at leftmost position)
-  const addModule = (meta: any) => {
+  const addModule = async (meta: any) => {
     const board = breadboards[breadboards.length - 1]; // Add to the last breadboard by default
     if (!board) return;
     const layout = layouts[board.type];
-    const numberOfRows = layout ? layout.length : 10;
     const cellSize = 18; // should match BreadboardSVG
     const margin = 2;
-    const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
-    const height = numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
     
-    // Debug: Log meta switches
-    // if (meta.switches && meta.switches.length > 0) {
-    //   console.log(`[addModule] Adding module ${meta.slug} with switches:`, meta.switches);
-    // }
+    // Load image dimensions to calculate proper aspect ratio
+    const imagePath = `./modules/${meta.slug}/panel_large.png`;
+    let height: number;
+    
+    try {
+      const imageDimensions = await loadImageDimensions(imagePath);
+      height = calculateModuleHeight(meta.unitsWidth || 5, cellSize, margin, imageDimensions.aspectRatio);
+    } catch (error) {
+      // Fallback to old calculation if image loading fails
+      console.warn(`Failed to load image dimensions for ${meta.slug}:`, error);
+      const numberOfRows = layout ? layout.length : 10;
+      const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+      height = numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+    }
+    
     setModules(mods => [
       ...mods,
       {
@@ -403,7 +414,7 @@ export default function App() {
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     setDraggedModule(null);
     setDragPreview(null);
     const { over, active } = event;
@@ -428,11 +439,17 @@ export default function App() {
       const boardId = overId.replace('breadboard-svg-', '');
       const board = breadboards.find(b => b.id === boardId);
       const layout = board ? layouts[board.type] : null;
-      const numberOfRows = layout ? layout.length : 10;
       const cellSize = 18;
       const margin = 2;
-      const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
-      const height = numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+      
+      // For existing modules, preserve their current height (already calculated)
+      const existingModule = modules.find(m => m.id === active.data.current.modId);
+      const height = existingModule ? existingModule.height : (() => {
+        const numberOfRows = layout ? layout.length : 10;
+        const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+        return numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+      })();
+      
       setModules(mods => mods.map(m =>
         m.id === active.data.current.modId
           ? { ...m, breadboardId: boardId, x: dragPreview.x, height, legsPattern: m.legsPattern || "" }
@@ -446,11 +463,24 @@ export default function App() {
       const boardId = overId.replace('breadboard-svg-', '');
       const board = breadboards.find(b => b.id === boardId);
       const layout = board ? layouts[board.type] : null;
-      const numberOfRows = layout ? layout.length : 10;
       const cellSize = 18;
       const margin = 2;
-      const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
-      const height = numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+      
+      // Load image dimensions to calculate proper aspect ratio
+      const imagePath = `./modules/${active.data.current.meta.slug}/panel_large.png`;
+      let height: number;
+      
+      try {
+        const imageDimensions = await loadImageDimensions(imagePath);
+        height = calculateModuleHeight(active.data.current.meta.unitsWidth || 5, cellSize, margin, imageDimensions.aspectRatio);
+      } catch (error) {
+        // Fallback to old calculation if image loading fails
+        console.warn(`Failed to load image dimensions for ${active.data.current.meta.slug}:`, error);
+        const numberOfRows = layout ? layout.length : 10;
+        const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+        height = numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+      }
+      
       setModules(mods => [
         ...mods,
         {
@@ -571,6 +601,27 @@ export default function App() {
           const loadedModules = await Promise.all(data.modules.map(async (mod: any) => {
             // Fetch latest meta.json for this module type
             const meta = await fetch(`./modules/${mod.type}/meta.json`).then(r => r.json());
+            
+            // Calculate height using image dimensions
+            const cellSize = 18;
+            const margin = 2;
+            const imagePath = `./modules/${mod.type}/panel_large.png`;
+            let height: number;
+            
+            try {
+              const imageDimensions = await loadImageDimensions(imagePath);
+              height = calculateModuleHeight(meta.unitsWidth || mod.width || 5, cellSize, margin, imageDimensions.aspectRatio);
+            } catch (error) {
+              // Fallback to saved height or calculate from breadboard
+              console.warn(`Failed to load image dimensions for ${mod.type}:`, error);
+              height = mod.height || (() => {
+                // If no saved height, fallback to old calculation
+                const numberOfRows = 10; // Default fallback
+                const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+                return numberOfRows * scaledCellSize + (numberOfRows - 1) * margin;
+              })();
+            }
+            
             // Merge knob values
             const knobs = Array.isArray(meta.knobs)
               ? meta.knobs.map((k: any) => ({
@@ -595,7 +646,7 @@ export default function App() {
               x: mod.x,
               y: mod.y,
               width: mod.width,
-              height: mod.height,
+              height,
               pcbImage: `./modules/${mod.type}/panel.png`,
               pcbImageLarge: `./modules/${mod.type}/panel_large.png`,
               pins: Array.isArray(meta.pins) ? meta.pins : [],

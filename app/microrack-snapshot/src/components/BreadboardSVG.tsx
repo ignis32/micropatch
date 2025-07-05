@@ -67,7 +67,7 @@ const COLORS: Record<string, string> = {
   _: "#181818"   // gap
 };
 
-function DraggableModule({ mod, cellSize, margin, gridPadding = 20, onKnobChange, onSwitchChange, onKnobHover, onSwitchHover, onElementHoverEnd, onPinClick, pendingCable, onDebugCoordsChange, onPinPointerDown, hoveredPinId, setHoveredPinId }: { mod: ModuleInstance, cellSize: number, margin: number, gridPadding?: number, onKnobChange?: (moduleId: string, knobId: string, value: number) => void, onSwitchChange?: (moduleId: string, switchId: string, value: boolean) => void, onKnobHover?: (moduleId: string, knobTitle: string) => void, onSwitchHover?: (moduleId: string, switchTitle: string) => void, onElementHoverEnd?: () => void, onPinClick?: any, pendingCable?: any, onDebugCoordsChange?: (coords: {x: number, y: number} | null) => void, onPinPointerDown?: any, hoveredPinId?: string | null, setHoveredPinId?: (id: string | null) => void }) {
+function DraggableModule({ mod, cellSize, margin, gridPadding = 20, onKnobChange, onSwitchChange, onKnobHover, onSwitchHover, onElementHoverEnd, onPinClick, pendingCable, onDebugCoordsChange, onPinPointerDown, hoveredPinId, setHoveredPinId, layout }: { mod: ModuleInstance, cellSize: number, margin: number, gridPadding?: number, onKnobChange?: (moduleId: string, knobId: string, value: number) => void, onSwitchChange?: (moduleId: string, switchId: string, value: boolean) => void, onKnobHover?: (moduleId: string, knobTitle: string) => void, onSwitchHover?: (moduleId: string, switchTitle: string) => void, onElementHoverEnd?: () => void, onPinClick?: any, pendingCable?: any, onDebugCoordsChange?: (coords: {x: number, y: number} | null) => void, onPinPointerDown?: any, hoveredPinId?: string | null, setHoveredPinId?: (id: string | null) => void, layout: string[] }) {
   const {attributes, listeners, setNodeRef, isDragging} = useDraggable({
     id: `module-${mod.id}`,
     data: {
@@ -82,10 +82,15 @@ function DraggableModule({ mod, cellSize, margin, gridPadding = 20, onKnobChange
       mod: mod
     }
   });
+    // Calculate bottom-aligned position
+    const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+    const breadboardHeight = layout.length * scaledCellSize + (layout.length - 1) * margin;
+    const modY = gridPadding + breadboardHeight - mod.height;
+    
     return (
     <foreignObject
       x={gridPadding + mod.x * (cellSize + margin)}
-      y={gridPadding}
+      y={modY}
       width={mod.width * cellSize + (mod.width - 1) * margin}
       height={mod.height}
       style={{ overflow: 'visible' }}
@@ -179,7 +184,9 @@ export default function BreadboardSVG({
   const allPins: Record<string, AllPin> = {};
   modules.forEach(mod => {
     const modX = BREADBOARD_GRID_PADDING + mod.x * (cellSize + margin);
-    const modY = BREADBOARD_GRID_PADDING;
+    // Position module to align bottom edge with bottom of breadboard
+    const breadboardHeight = rows * scaledCellSize + (rows - 1) * margin;
+    const modY = BREADBOARD_GRID_PADDING + breadboardHeight - mod.height;
     const width = mod.width * cellSize + (mod.width - 1) * margin;
     const height = mod.height;
     // Use shared pin positioning utility
@@ -298,6 +305,7 @@ export default function BreadboardSVG({
             cellSize={cellSize}
             margin={margin}
             gridPadding={BREADBOARD_GRID_PADDING}
+            layout={layout}
             onKnobChange={onKnobChange}
             onSwitchChange={onSwitchChange}
             onKnobHover={onKnobHover}
