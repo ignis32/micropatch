@@ -252,8 +252,14 @@ export default function BreadboardSVG({
                 const isGap = ch === "_";
                 
                 if (isPinCell) {
-                  // Bright highlight for actual pin positions
-                  bg = dragPreview.valid ? "#53e453" : "#ff3030";
+                  // Bright highlight for actual pin positions, but darker if on gap
+                  if (isGap) {
+                    // Invalid leg on gap - medium brightness
+                    bg = dragPreview.valid ? "#3a9a3a" : "#cc2020";
+                  } else {
+                    // Valid leg on proper pin area - brightest
+                    bg = dragPreview.valid ? "#53e453" : "#ff3030";
+                  }
                 } else if (inHighlight) {
                   // Different highlight intensity based on cell type
                   if (isGap) {
