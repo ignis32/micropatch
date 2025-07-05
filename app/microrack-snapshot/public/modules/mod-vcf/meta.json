@@ -1,0 +1,91 @@
+{
+  "name": "filter",
+  "slug": "mod-vcf",
+  "unitsWidth": 9,
+  "legsPattern": null,
+  "shortDescription": "voltage controlled low/high pass diod-ladder filter module with resonance control and cutoff modulation ",
+  "inputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.18,
+          "y": 0.05
+        },
+          {
+          "x": 0.18,
+          "y": 0.10
+        }
+      ]
+    },
+    {
+      "title": "CUTOFF",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.28,
+          "y": 0.03
+        },  {
+          "x": 0.28,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+        {
+          "x": 0.73,
+          "y": 0.03
+        },
+          {
+          "x": 0.73,
+          "y": 0.08
+        },
+            {
+          "x": 0.85,
+          "y": 0.03
+        },
+          {
+          "x": 0.85,
+          "y": 0.08
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "CUTOFF",
+      "description": null,
+      "x": 0.5,
+      "y": 0.85
+    },
+    {
+      "title": "RESONANCE",
+      "description": null,
+      "x": 0.5,
+      "y": 0.63
+    },
+    {
+      "title": "DEPTH",
+      "description": null,
+      "x": 0.5,
+      "y": 0.4
+    }
+  ]
+  ,
+    
+  "switches": [
+    {
+      "title": "HIGHLOW",
+      "x": 0.5,
+      "y": 0.2,
+      "description": null
+       
+    }
+  ]
+}

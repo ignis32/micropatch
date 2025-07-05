@@ -1,0 +1,89 @@
+{
+  "name": "compressor",
+  "slug": "mod-comp",
+  "unitsWidth": 9,
+  "legsPattern": null,
+  "shortDescription": "groovy compressor with adjustable threshold, attack, release, and output level. optional sidechain input and envelope output",
+  "inputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+          {
+          "x": 0.17,
+          "y": 0.06
+        },
+        {
+          "x": 0.17,
+          "y": 0.10
+        }
+      ]
+    },
+    {
+      "title": "SIDECHAIN",
+      "description": null,
+      "pins": [
+
+         {
+          "x": 0.285,
+          "y": 0.04
+        },
+        {
+          "x": 0.285,
+          "y": 0.09
+        }
+          
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL",
+      "description": null,
+      "pins": [
+         {
+          "x": 0.83,
+          "y": 0.06
+        },
+        {
+          "x": 0.83,
+          "y": 0.10
+        }
+      ]
+    }
+  ],
+  "knobs": [
+    {
+      "title": "COMPRESSION",
+      "x": 0.4,
+      "y": 0.365
+    },
+    {
+      "title": "ATTACK",
+      "x": 0.4,
+      "y": 0.635
+    },
+    {
+      "title": "LEVEL",
+      "x": 0.5,
+      "y": 0.859
+    }
+  ],
+    "switches": [
+    {
+      "title": "FASTSLOW",
+      "x": 0.830,
+      "y": 0.50,
+      "description": null
+       
+    },    
+   
+    {
+      "title": "SIDECHAIN",
+      "x": 0.55,
+      "y": 0.126,
+      "description": null
+       
+    }
+  ]
+}

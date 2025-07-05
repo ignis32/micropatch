@@ -1,0 +1,21 @@
+[
+  "mod-clk",
+  "mod-comp",
+  "mod-delay",
+  "mod-env",
+  "mod-eq",
+  "mod-esp32",
+  "mod-in-63",
+  "mod-jacket",
+  "mod-key",
+  "mod-lpg",
+  "mod-mix",
+  "mod-noise",
+  "mod-out-35",
+  "mod-out-63",
+  "mod-pwr",
+  "mod-sat",
+  "mod-seq",
+  "mod-vcf",
+  "mod-vco"
+]

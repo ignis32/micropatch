@@ -68,14 +68,14 @@ export default function ModuleBrowser({ onAddModule }: ModuleBrowserProps) {
   const { setNodeRef, isOver } = useDroppable({ id: 'module-browser-dropzone' });
 
   useEffect(() => {
-    fetch("/modules_index.json")
+    fetch("./modules_index.json")
       .then(res => res.json())
       .then(setModules)
   }, [])
 
   useEffect(() => {
     Promise.all(modules.map(async slug => {
-      const resp = await fetch(`/modules/${slug}/meta.json`)
+      const resp = await fetch(`./modules/${slug}/meta.json`)
       const meta = await resp.json()
       return { slug, ...meta }
     })).then(setMetas)

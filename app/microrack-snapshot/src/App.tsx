@@ -89,7 +89,7 @@ export default function App() {
   useEffect(() => { pendingCableRef.current = pendingCable; }, [pendingCable]);
 
   useEffect(() => {
-    fetch("/breadboards/breadboards.json")
+    fetch("./breadboards/breadboards.json")
       .then(r => r.json())
       .then(setLayouts);
   }, []);
@@ -570,7 +570,7 @@ export default function App() {
           // For each module, fetch latest meta and merge knob values
           const loadedModules = await Promise.all(data.modules.map(async (mod: any) => {
             // Fetch latest meta.json for this module type
-            const meta = await fetch(`/modules/${mod.type}/meta.json`).then(r => r.json());
+            const meta = await fetch(`./modules/${mod.type}/meta.json`).then(r => r.json());
             // Merge knob values
             const knobs = Array.isArray(meta.knobs)
               ? meta.knobs.map((k: any) => ({
