@@ -89,6 +89,59 @@ export default function GlobalCableLayer({
     return null;
   };
 
+  const createParabolicPath = (fromPos: any, toPos: any) => {
+    const dx = toPos.x - fromPos.x;
+    const dy = toPos.y - fromPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Calculate 45-degree approach distance for both ends
+    const approachDistance = Math.min(distance * 0.3, 80); // 30% of total distance, max 80px
+    
+    // For 45-degree angles: horizontal and vertical offsets should be equal
+    const angle45Offset = approachDistance * 0.707; // cos(45°) = sin(45°) ≈ 0.707
+    
+    // Detect connection type
+    const isHorizontal = Math.abs(dy) < Math.abs(dx) * 0.3;
+    
+    let c1, c2;
+    
+    if (isHorizontal && Math.abs(dx) > 80) {
+      // Horizontal connections: 45-degree approach from both ends with parabolic droop
+      const parabolicOffset = Math.max(Math.abs(dx) * 0.3, 80);
+      
+      // 45-degree approach from start pin
+      c1 = { 
+        x: fromPos.x + Math.sign(dx) * angle45Offset, 
+        y: fromPos.y + angle45Offset + parabolicOffset * 0.3
+      };
+      
+      // 45-degree approach to end pin
+      c2 = { 
+        x: toPos.x - Math.sign(dx) * angle45Offset, 
+        y: toPos.y + angle45Offset + parabolicOffset * 0.3
+      };
+    } else {
+      // Vertical or short connections: ensure 45-degree approaches with curve
+      const bendFactor = Math.max(distance * 0.4, 60);
+      
+      // 45-degree approach from start pin
+      const fromDirection = dx >= 0 ? 1 : -1;
+      c1 = { 
+        x: fromPos.x + fromDirection * angle45Offset, 
+        y: fromPos.y + angle45Offset + bendFactor * 0.4
+      };
+      
+      // 45-degree approach to end pin  
+      const toDirection = dx >= 0 ? -1 : 1;
+      c2 = { 
+        x: toPos.x + toDirection * angle45Offset, 
+        y: toPos.y + angle45Offset + bendFactor * 0.4
+      };
+    }
+    
+    return `M ${fromPos.x} ${fromPos.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${toPos.x} ${toPos.y}`;
+  };
+
   const renderCable = (from: any, to: any, color: string, id: string) => {
     const fromPos = allPinPositions[from.moduleId]?.[from.pinType]?.[from.ioIndex]?.[from.pinIndex];
     const toPos = allPinPositions[to.moduleId]?.[to.pinType]?.[to.ioIndex]?.[to.pinIndex];
@@ -97,13 +150,7 @@ export default function GlobalCableLayer({
       return null;
     }
     
-    // Create bezier curve path
-    const dx = toPos.x - fromPos.x;
-    const dy = toPos.y - fromPos.y;
-    const bend = Math.max(Math.abs(dx), Math.abs(dy)) * 0.4 + 20;
-    const c1 = { x: fromPos.x, y: fromPos.y + bend };
-    const c2 = { x: toPos.x, y: toPos.y + bend };
-    const path = `M ${fromPos.x} ${fromPos.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${toPos.x} ${toPos.y}`;
+    const path = createParabolicPath(fromPos, toPos);
     
     return (
       <g key={id}>
@@ -180,13 +227,8 @@ export default function GlobalCableLayer({
             };
           }
           
-          // Create bezier curve for ghost cable
-          const dx = mouseSvg.x - fromPos.x;
-          const dy = mouseSvg.y - fromPos.y;
-          const bend = Math.max(Math.abs(dx), Math.abs(dy)) * 0.4 + 20;
-          const c1 = { x: fromPos.x, y: fromPos.y + bend };
-          const c2 = { x: mouseSvg.x, y: mouseSvg.y + bend };
-          const path = `M ${fromPos.x} ${fromPos.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${mouseSvg.x} ${mouseSvg.y}`;
+          // Create parabolic curve for ghost cable
+          const path = createParabolicPath(fromPos, mouseSvg);
           
           return (
             <g>
