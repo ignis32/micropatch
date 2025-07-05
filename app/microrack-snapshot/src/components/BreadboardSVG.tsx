@@ -249,12 +249,24 @@ export default function BreadboardSVG({
                 const pinIndex = x - x0;
                 const isPinCell = isPinRow && dragPreview.pins?.includes(pinIndex);
                 const inHighlight = isPinRow && x >= x0 && x < x0 + w;
+                const isGap = ch === "_";
+                
                 if (isPinCell) {
+                  // Bright highlight for actual pin positions
                   bg = dragPreview.valid ? "#53e453" : "#ff3030";
                 } else if (inHighlight) {
-                  bg = dragPreview.valid
-                    ? "rgba(83,228,83,0.15)"
-                    : "rgba(255,48,48,0.15)";
+                  // Different highlight intensity based on cell type
+                  if (isGap) {
+                    // Even darker for gaps
+                    bg = dragPreview.valid
+                      ? "rgba(83,228,83,0.08)"
+                      : "rgba(255,48,48,0.08)";
+                  } else {
+                    // Medium highlight for between-pin areas
+                    bg = dragPreview.valid
+                      ? "rgba(83,228,83,0.15)"
+                      : "rgba(255,48,48,0.15)";
+                  }
                 }
               }
               return (
