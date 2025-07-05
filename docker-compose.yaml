@@ -8,4 +8,3 @@ services:
       - "5173:5173"
     volumes:
       - ./app:/app
-      - ./microrack_modules_library:/app/microrack-snapshot/public/modules:ro
