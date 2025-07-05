@@ -106,15 +106,25 @@ export default function GlobalCableLayer({
     const path = `M ${fromPos.x} ${fromPos.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${toPos.x} ${toPos.y}`;
     
     return (
-      <path
-        key={id}
-        d={path}
-        stroke={color}
-        strokeWidth={5}
-        strokeOpacity={0.8}
-        fill="none"
-        style={{ pointerEvents: 'none' }}
-      />
+      <g key={id}>
+        {/* Semi-transparent black outline */}
+        <path
+          d={path}
+          stroke="rgba(0, 0, 0, 0.4)"
+          strokeWidth={8.4}
+          fill="none"
+          style={{ pointerEvents: 'none' }}
+        />
+        {/* Transparent main cable */}
+        <path
+          d={path}
+          stroke={color}
+          strokeWidth={5}
+          strokeOpacity={0.6}
+          fill="none"
+          style={{ pointerEvents: 'none' }}
+        />
+      </g>
     );
   };
 
@@ -179,17 +189,31 @@ export default function GlobalCableLayer({
           const path = `M ${fromPos.x} ${fromPos.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${mouseSvg.x} ${mouseSvg.y}`;
           
           return (
-            <path
-              d={path}
-              stroke="#ff2fd6"
-              strokeWidth={6}
-              fill="none"
-              style={{ 
-                strokeDasharray: '10 8', 
-                opacity: 0.9, 
-                pointerEvents: 'none' 
-              }}
-            />
+            <g>
+              {/* Ghost cable semi-transparent outline */}
+              <path
+                d={path}
+                stroke="rgba(0, 0, 0, 0.3)"
+                strokeWidth={9.6}
+                fill="none"
+                style={{ 
+                  strokeDasharray: '10 8', 
+                  pointerEvents: 'none' 
+                }}
+              />
+              {/* Ghost cable transparent main */}
+              <path
+                d={path}
+                stroke="#ff2fd6"
+                strokeWidth={6}
+                fill="none"
+                style={{ 
+                  strokeDasharray: '10 8', 
+                  opacity: 0.6, 
+                  pointerEvents: 'none' 
+                }}
+              />
+            </g>
           );
         })()}
       </svg>
