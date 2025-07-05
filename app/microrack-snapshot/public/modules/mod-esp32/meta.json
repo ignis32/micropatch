@@ -33,38 +33,74 @@
           "x": 0.5,
           "y": 0.12
         }
+   
       ]
     }
   ],
   "outputs": [
     {
-      "title": "MIDI GATE",
-      "description": null,
+      "title": "A",
+      "description": "MIDI GATE",
       "pins": [
         {
-          "x": 0.5,
-          "y": 0.4
+          "x": 0.76,
+          "y": 0.10
+        },
+            {
+          "x": 0.76,
+          "y": 0.14
         }
       ]
     },
     {
-      "title": "MIDI CC",
-      "description": null,
+      "title": "B",
+      "description": "MIDI CC",
       "pins": [
         {
-          "x": 0.5,
-          "y": 0.5
+          "x": 0.84,
+          "y": 0.08
+        },
+            {
+          "x": 0.84,
+          "y": 0.12
         }
       ]
     },
     {
-      "title": "MIDI MOD",
-      "description": null,
+      "title": "C",
+      "description": "MIDI MOD",
       "pins": [
         {
-          "x": 0.5,
-          "y": 0.6
+          "x": 0.90,
+          "y": 0.10
+        }, {
+          "x": 0.90,
+          "y": 0.14
         }
+      ]
+    },
+
+        {
+      "title": "RESET",
+      "description": " ",
+      "pins": [
+        {
+          "x": 0.96,
+          "y": 0.42
+        }
+      ]
+    }
+
+    ,
+
+        {
+      "title": "CLOCK",
+      "description": " D",
+      "pins": [
+        {
+          "x": 0.96,
+          "y": 0.36
+        } 
       ]
     }
   ],
