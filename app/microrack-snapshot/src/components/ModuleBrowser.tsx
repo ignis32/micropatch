@@ -49,7 +49,7 @@ function ModuleItem({ meta, onAddModule }: { meta: ModuleMeta, onAddModule: (met
         {meta.name}
       </div>
       <img
-        src={`/modules/${meta.slug}/panel.png`}
+        src={`./modules/${meta.slug}/panel.png`}
         style={{ width: "100%", maxHeight: 40, objectFit: "contain", background: "#222", marginBottom: 3 }}
         alt={meta.name}
         onError={e => ((e.target as HTMLImageElement).style.display = 'none')}
