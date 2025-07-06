@@ -57,6 +57,7 @@ export default function App() {
   const [debugMode, setDebugMode] = useState(false);
   const [recordedPins, setRecordedPins] = useState<Record<string, {mouse: {x: number, y: number}, calc: {x: number, y: number}, info: string}>>({});
   const [hoveredModuleCoords, setHoveredModuleCoords] = useState<{moduleId: string, x: number, y: number} | null>(null);
+  const [isLoadingPatch, setIsLoadingPatch] = useState(false);
   // Ref to always have latest pendingCable in pointer event handlers
   const pendingCableRef = useRef(pendingCable);
   useEffect(() => { pendingCableRef.current = pendingCable; }, [pendingCable]);
@@ -563,16 +564,58 @@ export default function App() {
   const handleLoadPatch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    setIsLoadingPatch(true);
+    
     const reader = new FileReader();
     reader.onload = async (evt: ProgressEvent<FileReader>) => {
       try {
         const data: any = JSON.parse(evt.target?.result as string);
-        if (data.breadboards && data.modules) {
-          setBreadboards(data.breadboards);
-          // For each module, fetch latest meta and merge knob values
-          const loadedModules = await Promise.all(data.modules.map(async (mod: any) => {
+        
+        // Validate patch structure
+        if (!data.breadboards) {
+          throw new Error('Missing required field: breadboards');
+        }
+        if (!Array.isArray(data.breadboards)) {
+          throw new Error('Invalid breadboards format: must be an array');
+        }
+        if (!data.modules) {
+          throw new Error('Missing required field: modules');
+        }
+        if (!Array.isArray(data.modules)) {
+          throw new Error('Invalid modules format: must be an array');
+        }
+        
+        // Clear existing state first
+        setModules([]);
+        setCables([]);
+        setPendingCable({ from: null, mouse: null });
+        setHoveredPinId(null);
+        
+        setBreadboards(data.breadboards);
+        
+        // For each module, fetch latest meta and merge knob values
+        const loadedModules = await Promise.all(data.modules.map(async (mod: any, index: number) => {
+          try {
+            // Validate module structure
+            if (!mod.type) {
+              throw new Error(`Module ${index + 1}: missing required field 'type'`);
+            }
+            if (!mod.id) {
+              throw new Error(`Module ${index + 1} (${mod.type}): missing required field 'id'`);
+            }
+            
             // Fetch latest meta.json for this module type
-            const meta = await fetch(`./modules/${mod.type}/meta.json`).then(r => r.json());
+            let meta;
+            try {
+              const response = await fetch(`./modules/${mod.type}/meta.json`);
+              if (!response.ok) {
+                throw new Error(`Module ${index + 1} (${mod.type}): meta.json not found (${response.status})`);
+              }
+              meta = await response.json();
+            } catch (fetchError) {
+              throw new Error(`Module ${index + 1} (${mod.type}): failed to load metadata - ${fetchError.message}`);
+            }
             
             // Calculate height using image dimensions
             const cellSize = 18;
@@ -615,9 +658,9 @@ export default function App() {
             return {
               id: mod.id,
               type: mod.type,
-              x: mod.x,
-              y: mod.y,
-              width: mod.width,
+              x: mod.x || 0,
+              y: mod.y || 0,
+              width: mod.width || meta.unitsWidth || 5,
               height,
               pcbImage: `./modules/${mod.type}/panel.png`,
               pcbImageLarge: `./modules/${mod.type}/panel_large.png`,
@@ -629,12 +672,45 @@ export default function App() {
               inputs: Array.isArray(meta.inputs) ? meta.inputs : [],
               outputs: Array.isArray(meta.outputs) ? meta.outputs : []
             };
-          }));
-          setModules(loadedModules);
-          setCables(Array.isArray(data.cables) ? data.cables : []);
+          } catch (moduleError) {
+            throw new Error(`Module loading error: ${moduleError.message}`);
+          }
+        }));
+        setModules(loadedModules);
+        
+        // Validate and filter cables to ensure all pin references exist
+        const loadedCables = Array.isArray(data.cables) ? data.cables : [];
+        const moduleIds = new Set(loadedModules.map(m => m.id));
+        const invalidCables: string[] = [];
+        const validCables = loadedCables.filter((cable: any, index: number) => {
+          if (!cable.from || !cable.to) {
+            invalidCables.push(`Cable ${index + 1}: missing from/to pins`);
+            return false;
+          }
+          // Extract module IDs from pin IDs (format: moduleId:pinType:ioIndex:pinIndex)
+          const fromModuleId = cable.from.split(':')[0];
+          const toModuleId = cable.to.split(':')[0];
+          const isValid = moduleIds.has(fromModuleId) && moduleIds.has(toModuleId);
+          if (!isValid) {
+            invalidCables.push(`Cable ${index + 1}: references non-existent module (${cable.from} -> ${cable.to})`);
+          }
+          return isValid;
+        });
+        setCables(validCables);
+        
+        // Show warning about invalid cables if any were found
+        if (invalidCables.length > 0) {
+          console.warn('Some cables were skipped during load:', invalidCables);
+          alert(`Patch loaded successfully, but ${invalidCables.length} invalid cable(s) were skipped:\n\n${invalidCables.slice(0, 5).join('\n')}${invalidCables.length > 5 ? '\n... and more' : ''}`);
         }
       } catch (err) {
-        alert('Invalid patch file.');
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+        alert(`Failed to load patch file:\n\n${errorMessage}`);
+        console.error('Patch loading error:', err);
+      } finally {
+        setIsLoadingPatch(false);
+        // Reset file input to allow reloading the same file
+        e.target.value = '';
       }
     };
     reader.readAsText(file);
@@ -1093,7 +1169,9 @@ export default function App() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <b style={{ color: "#fff", fontSize: 16 }}>Patch Management</b>
             <button onClick={handleSavePatch} style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #fa4", background: "#3a2a1a", color: "#fa4", fontWeight: 500 }}>💾 Save Patch</button>
-            <button onClick={() => fileInputRef.current?.click()} style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #4af", background: "#1a2a3a", color: "#4af", fontWeight: 500 }}>📁 Load Patch</button>
+            <button onClick={() => fileInputRef.current?.click()} disabled={isLoadingPatch} style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #4af", background: isLoadingPatch ? "#222" : "#1a2a3a", color: isLoadingPatch ? "#666" : "#4af", fontWeight: 500 }}>
+              {isLoadingPatch ? "⏳ Loading..." : "📁 Load Patch"}
+            </button>
             <input ref={fileInputRef} type="file" accept="application/json" style={{ display: 'none' }} onChange={handleLoadPatch} />
           </div>
           
