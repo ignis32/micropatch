@@ -29,9 +29,9 @@ const ModuleSwitch: React.FC<ModuleSwitchProps> = ({
   };
 
   // Colors based on state
-  const fillColor = value ? "#4CAF50" : "#9E9E9E"; // Green when on, gray when off
+  const fillColor = value ? "#4CAF50" : "#8B4A47"; // Saturated green when on, muted dark red when off
   const strokeColor = "#000";
-  const textColor = value ? "#fff" : "#000";
+  const textColor = value ? "#fff" : "#fff"; // White text for both states for better contrast
 
   return (
     <g
