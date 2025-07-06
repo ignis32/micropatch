@@ -69,8 +69,7 @@ export const generateInstructions = async (
   // Count breadboards by type
   const breadboardCounts: Record<string, number> = {};
   breadboards.forEach(board => {
-    const boardName = board.type === 'bb-830' ? '830-pin Breadboard' : '400-pin Breadboard';
-    breadboardCounts[boardName] = (breadboardCounts[boardName] || 0) + 1;
+    breadboardCounts[board.type] = (breadboardCounts[board.type] || 0) + 1;
   });
   
   instructions += 'BREADBOARDS:\n';

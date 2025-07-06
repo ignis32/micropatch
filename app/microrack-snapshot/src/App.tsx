@@ -16,10 +16,10 @@ import { loadImageDimensions, calculateModuleHeight } from './utils/imageLoader'
 import { generateInstructions } from './utils/instructionGenerator';
 
 
-const BREADBOARD_TYPES = [
-  { id: "bb-830", name: "830 Pin Breadboard" },
-  { id: "bb-400", name: "400 Pin Breadboard" }
-];
+// Generate breadboard types from loaded layouts
+const getBreadboardTypes = (layouts: Record<string, string[]>) => {
+  return Object.keys(layouts).map(id => ({ id, name: id }));
+};
 
 
 function isPinObj(obj: any): obj is { pinId: string } {
@@ -1203,7 +1203,7 @@ export default function App() {
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <label style={{ color: "#ccc", fontSize: 14 }}>Breadboard Type:</label>
               <select value={selectedType} onChange={e => setSelectedType(e.target.value)} style={{ padding: "6px 8px", borderRadius: 6, border: "1px solid #555", background: "#222", color: "#fff" }}>
-                {BREADBOARD_TYPES.map(b =>
+                {getBreadboardTypes(layouts).map(b =>
                   <option key={b.id} value={b.id}>{b.name}</option>
                 )}
               </select>
