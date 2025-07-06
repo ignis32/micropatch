@@ -259,15 +259,18 @@ export default function App() {
           }
         }
         // --- End overlap validation ---
-        // Check bottom rows instead of top rows (for bottom-aligned modules)
-        for (let rowOffset = 0; rowOffset < 2; rowOffset++) {
-          const rowIndex = layout.length - 2 + rowOffset; // Bottom two rows
-          const row = layout[rowIndex];
-          if (!row) { valid = false; break; }
-          for (let i of pinOffsets) {
-            if (x + i >= row.length) { valid = false; break; }
-            const c = row[x + i];
-            if (c !== "P") { valid = false; break; }
+        // Check pin placement - virtual modules can be placed anywhere
+        if (draggedModule.legsPattern !== "virtual") {
+          // Check bottom rows instead of top rows (for bottom-aligned modules)
+          for (let rowOffset = 0; rowOffset < 2; rowOffset++) {
+            const rowIndex = layout.length - 2 + rowOffset; // Bottom two rows
+            const row = layout[rowIndex];
+            if (!row) { valid = false; break; }
+            for (let i of pinOffsets) {
+              if (x + i >= row.length) { valid = false; break; }
+              const c = row[x + i];
+              if (c !== "P") { valid = false; break; }
+            }
           }
         }
         setDragPreview({ boardId, x, unitsWidth, valid, pins: pinOffsets });

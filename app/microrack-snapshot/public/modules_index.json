@@ -17,5 +17,6 @@
   "mod-sat",
   "mod-seq",
   "mod-vcf",
-  "mod-vco"
+  "mod-vco",
+  "virt-split"
 ]

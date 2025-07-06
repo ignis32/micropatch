@@ -1,0 +1,65 @@
+{
+  "name": "signal splitter",
+  "slug": "virt-split",
+  "unitsWidth": 1,
+  "legsPattern": "virtual",
+  "shortDescription": "Virtual signal splitter - uses breadboard's natural signal distribution",
+  "inputs": [
+    {
+      "title": "SIGNAL IN",
+      "description": "Input signal to split",
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.1238
+        },
+        {
+          "x": 0.5,
+          "y": 0.2038
+        },
+        {
+          "x": 0.5,
+          "y": 0.2838
+        },
+        {
+          "x": 0.5,
+          "y": 0.3638
+        },
+        {
+          "x": 0.5,
+          "y": 0.4438
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "title": "SIGNAL OUT",
+      "description": "Split signal outputs",
+      "pins": [
+        {
+          "x": 0.5,
+          "y": 0.5562
+        },
+        {
+          "x": 0.5,
+          "y": 0.6362
+        },
+        {
+          "x": 0.5,
+          "y": 0.7162
+        },
+        {
+          "x": 0.5,
+          "y": 0.7962
+        },
+        {
+          "x": 0.5,
+          "y": 0.8762
+        }
+      ]
+    }
+  ],
+  "knobs": [],
+  "switches": []
+}
