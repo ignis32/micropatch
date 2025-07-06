@@ -13,6 +13,7 @@ import {
   BREADBOARD_MARGIN
 } from './breadboardConfig';
 import { loadImageDimensions, calculateModuleHeight } from './utils/imageLoader';
+import { generateInstructions } from './utils/instructionGenerator';
 
 
 const BREADBOARD_TYPES = [
@@ -953,6 +954,23 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
+  // Generate assembly instructions
+  const handleGenerateInstructions = async () => {
+    try {
+      const instructions = await generateInstructions(breadboards, modules, cables);
+      const blob = new Blob([instructions], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `micropatch-instructions-${new Date().toISOString().slice(0, 10)}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to generate instructions:', error);
+      alert('Failed to generate assembly instructions. Check console for details.');
+    }
+  };
+
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
       <div style={{ display: "flex", minHeight: "100vh", background: "#181818" }}>
@@ -1172,6 +1190,7 @@ export default function App() {
             <button onClick={() => fileInputRef.current?.click()} disabled={isLoadingPatch} style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #4af", background: isLoadingPatch ? "#222" : "#1a2a3a", color: isLoadingPatch ? "#666" : "#4af", fontWeight: 500 }}>
               {isLoadingPatch ? "⏳ Loading..." : "📁 Load Patch"}
             </button>
+            <button onClick={handleGenerateInstructions} style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #af4", background: "#2a3a1a", color: "#af4", fontWeight: 500 }}>📋 Assembly Guide</button>
             <input ref={fileInputRef} type="file" accept="application/json" style={{ display: 'none' }} onChange={handleLoadPatch} />
           </div>
           
