@@ -324,6 +324,30 @@ export default function BreadboardSVG({
             }}
           />
         ))}
+        
+        {/* Module slug labels */}
+        {modules.map((mod) => {
+          const scaledCellSize = cellSize * BREADBOARD_VERTICAL_SCALE;
+          const breadboardHeight = layout.length * scaledCellSize + (layout.length - 1) * margin;
+          const modY = BREADBOARD_GRID_PADDING + breadboardHeight - mod.height;
+          const labelY = modY + mod.height + 15; // Position below module
+          const labelX = BREADBOARD_GRID_PADDING + mod.x * (cellSize + margin) + (mod.width * cellSize + (mod.width - 1) * margin) / 2; // Center horizontally
+          
+          return (
+            <text
+              key={`label-${mod.id}`}
+              x={labelX}
+              y={labelY}
+              fill="#fff"
+              fontSize={12}
+              textAnchor="middle"
+              style={{ userSelect: 'none', pointerEvents: 'none' }}
+            >
+              {mod.type}
+            </text>
+          );
+        })}
+        
         {/* Cables are now rendered globally at app level */}
         {/* Ghost cable is now rendered globally at app level */}
       </svg>
