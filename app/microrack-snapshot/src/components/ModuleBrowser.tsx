@@ -48,14 +48,16 @@ function ModuleItem({ meta, onAddModule }: { meta: ModuleMeta, onAddModule: (met
         <svg width="18" height="18" fill="#aaa" style={{verticalAlign: "middle", marginRight: 7}}><circle cx="9" cy="9" r="7"/></svg>
         {meta.name}
       </div>
-      <img
-        src={`./modules/${meta.slug}/panel.png`}
-        style={{ width: "100%", maxHeight: 40, objectFit: "contain", background: "#222", marginBottom: 3 }}
-        alt={meta.name}
-        onError={e => ((e.target as HTMLImageElement).style.display = 'none')}
-      />
-      <div style={{ fontSize: "0.9em", color: "#888" }}>
-        {meta.shortDescription || (meta as any).description || ""}
+      <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+        <div style={{ fontSize: "0.9em", color: "#888", flex: 1 }}>
+          {meta.shortDescription || (meta as any).description || ""}
+        </div>
+        <img
+          src={`./modules/${meta.slug}/panel.png`}
+          style={{ width: 30, height: 60, objectFit: "contain", background: "#222", flexShrink: 0 }}
+          alt={meta.name}
+          onError={e => ((e.target as HTMLImageElement).style.display = 'none')}
+        />
       </div>
     </div>
   );
