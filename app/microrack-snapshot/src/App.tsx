@@ -59,6 +59,7 @@ export default function App() {
   const [recordedPins, setRecordedPins] = useState<Record<string, {mouse: {x: number, y: number}, calc: {x: number, y: number}, info: string}>>({});
   const [hoveredModuleCoords, setHoveredModuleCoords] = useState<{moduleId: string, x: number, y: number} | null>(null);
   const [isLoadingPatch, setIsLoadingPatch] = useState(false);
+  const [patchName, setPatchName] = useState('');
   // Ref to always have latest pendingCable in pointer event handlers
   const pendingCableRef = useRef(pendingCable);
   useEffect(() => { pendingCableRef.current = pendingCable; }, [pendingCable]);
@@ -548,6 +549,7 @@ export default function App() {
       }, {} as Record<string, boolean>)
     }));
     const data = {
+      patchName: patchName || 'untitled',
       breadboards,
       modules: minimalModules,
       cables
@@ -556,7 +558,8 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'micropatch.json';
+    const fileName = patchName ? `${patchName}.micropatch.json` : 'untitled.micropatch.json';
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -594,6 +597,11 @@ export default function App() {
         setHoveredPinId(null);
         
         setBreadboards(data.breadboards);
+        
+        // Load patch name if available
+        if (data.patchName) {
+          setPatchName(data.patchName);
+        }
         
         // For each module, fetch latest meta and merge knob values
         const loadedModules = await Promise.all(data.modules.map(async (mod: any, index: number) => {
@@ -957,12 +965,13 @@ export default function App() {
   // Generate assembly instructions
   const handleGenerateInstructions = async () => {
     try {
-      const instructions = await generateInstructions(breadboards, modules, cables);
+      const instructions = await generateInstructions(breadboards, modules, cables, patchName);
       const blob = new Blob([instructions], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `micropatch-instructions-${new Date().toISOString().slice(0, 10)}.txt`;
+      const fileName = patchName ? `${patchName}.assembly.txt` : `micropatch-instructions-${new Date().toISOString().slice(0, 10)}.txt`;
+      a.download = fileName;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -1167,6 +1176,27 @@ export default function App() {
         </div>
         {/* Right sidebar: Breadboard controls */}
         <div style={{ width: 280, background: "#161616", borderLeft: "1px solid #333", padding: 16, display: "flex", flexDirection: "column", gap: 12, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
+          {/* Patch Name */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ color: "#ccc", fontSize: 14 }}>Patch Name:</label>
+            <input 
+              type="text" 
+              value={patchName} 
+              onChange={e => setPatchName(e.target.value)}
+              placeholder="Enter patch name..."
+              style={{ 
+                padding: "6px 8px", 
+                borderRadius: 6, 
+                border: "1px solid #555", 
+                background: "#222", 
+                color: "#fff",
+                fontSize: 14
+              }}
+            />
+          </div>
+          
+          <hr style={{ border: "none", borderTop: "1px solid #333", margin: "8px 0" }} />
+          
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <b style={{ color: "#fff", fontSize: 16 }}>Breadboard Controls</b>
             

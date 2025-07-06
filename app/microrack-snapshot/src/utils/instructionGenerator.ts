@@ -48,13 +48,19 @@ const parsePinId = async (pinId: string, modules: ModuleInstance[]): Promise<str
 export const generateInstructions = async (
   breadboards: Breadboard[],
   modules: ModuleInstance[],
-  cables: Cable[]
+  cables: Cable[],
+  patchName?: string
 ): Promise<string> => {
   let instructions = '';
   
   // Header
   instructions += '===============================================\n';
-  instructions += '           MICROPATCH ASSEMBLY GUIDE\n';
+  if (patchName) {
+    instructions += `           ${patchName.toUpperCase()}\n`;
+    instructions += '           MICROPATCH ASSEMBLY GUIDE\n';
+  } else {
+    instructions += '           MICROPATCH ASSEMBLY GUIDE\n';
+  }
   instructions += '===============================================\n\n';
   
   // === BOM SECTION ===
