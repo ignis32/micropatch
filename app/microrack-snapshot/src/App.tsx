@@ -697,6 +697,11 @@ export default function App() {
         (c.from === from && c.to === to) || (c.from === to && c.to === from)
       );
       
+      // Check if target pin already has a cable connected (but not involving the from pin)
+      const targetPinOccupied = currentCables.find(c => 
+        (c.from === to || c.to === to) && c.from !== from && c.to !== from
+      );
+      
       // Debug: Log current cables and what we're trying to create (commented out to reduce noise)
       // console.log(`[handlePinClick] Creating cable from ${from} to ${to}`);
       // console.log(`[handlePinClick] Current cables:`, currentCables.map(c => ({ id: c.id, from: c.from, to: c.to })));
@@ -705,6 +710,9 @@ export default function App() {
       if (exists) {
         logDebug('cableCreation', { from, to, result: 'removed', reason: 'already exists' });
         return currentCables.filter(c => c !== exists);
+      } else if (targetPinOccupied) {
+        logDebug('cableCreation', { from, to, result: 'blocked', reason: 'target pin occupied' });
+        return currentCables; // Don't create cable, target pin is occupied
       } else {
         logDebug('cableCreation', { from, to, result: 'created' });
         return [
