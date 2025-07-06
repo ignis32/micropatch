@@ -14,40 +14,12 @@ import {
 } from './breadboardConfig';
 import { loadImageDimensions, calculateModuleHeight } from './utils/imageLoader';
 
-declare global {
-  interface Window {
-    _debugCableLog?: string[];
-    _lastDebugLogEntry?: string;
-  }
-}
 
 const BREADBOARD_TYPES = [
   { id: "bb-830", name: "830 Pin Breadboard" },
   { id: "bb-400", name: "400 Pin Breadboard" }
 ];
 
-// Debug log setup
-if (typeof window !== 'undefined' && !window._debugCableLog) {
-  window._debugCableLog = [];
-}
-const logDebug = (msg: string, data?: any) => {
-  const entry = `[${new Date().toISOString()}] ${msg}` + (data !== undefined ? `: ${JSON.stringify(data)}` : '');
-  if (window._debugCableLog) {
-    // More aggressive deduplication - only log if it's different from the last 3 entries
-    const lastEntries = window._debugCableLog.slice(-3);
-    if (!lastEntries.includes(entry)) {
-      window._debugCableLog.push(entry);
-      window._lastDebugLogEntry = entry;
-    } else {
-      // Only push '*' if last log is not already '*'
-      if (window._debugCableLog[window._debugCableLog.length - 1] !== '*') {
-        window._debugCableLog.push('*');
-      }
-    }
-  }
-  // Optionally log to console
-  // console.log(entry);
-};
 
 function isPinObj(obj: any): obj is { pinId: string } {
   return typeof obj === 'object' && obj !== null && typeof obj.pinId === 'string';
@@ -686,7 +658,6 @@ export default function App() {
     
     // Log cable creation attempt with result
     if (!from || from === to) {
-      logDebug('cableCreation', { from, to, result: 'cancelled', reason: !from ? 'no from pin' : 'same pin' });
       setPendingCable({ from: null });
       return;
     }
@@ -708,13 +679,10 @@ export default function App() {
       // console.log(`[handlePinClick] Cable exists?`, exists);
       
       if (exists) {
-        logDebug('cableCreation', { from, to, result: 'removed', reason: 'already exists' });
         return currentCables.filter(c => c !== exists);
       } else if (targetPinOccupied) {
-        logDebug('cableCreation', { from, to, result: 'blocked', reason: 'target pin occupied' });
         return currentCables; // Don't create cable, target pin is occupied
       } else {
-        logDebug('cableCreation', { from, to, result: 'created' });
         return [
           ...currentCables,
           {
@@ -748,7 +716,6 @@ export default function App() {
     // console.log(`[handlePinPointerDown] Looking for pinId: ${pinId}, found:`, pin);
     
     if (!pin) {
-      logDebug('dragStart', { pinId, result: 'failed', reason: 'pin not found' });
       return;
     }
     
@@ -777,15 +744,12 @@ export default function App() {
       // Start a new ghost cable from the opposite end
       if (oppositePinData) {
         // console.log(`[handlePinPointerDown] Removed cable, starting new ghost cable from opposite pin: ${oppositePin}`);
-        logDebug('cableRemoved', { removedCableId: existingCable.id, newFromPin: oppositePin });
         setPendingCable({ from: oppositePinData, mouse: { x: event.clientX, y: event.clientY } });
       } else {
         // console.log(`[handlePinPointerDown] Could not find opposite pin data for: ${oppositePin}`);
-        logDebug('cableRemoved', { removedCableId: existingCable.id, error: 'opposite pin not found' });
       }
     } else {
       // No existing cable - start new cable from this pin
-      logDebug('dragStart', { pinId, result: 'started' });
       setPendingCable({ from: pin, mouse: { x: event.clientX, y: event.clientY } });
     }
     
@@ -891,10 +855,8 @@ export default function App() {
         if (found.pinId !== fromPinId) {
           handlePinClick(found.pinId, fromPin);
         } else {
-          logDebug('dragEnd', { result: 'cancelled', reason: 'same pin' });
         }
       } else {
-        logDebug('dragEnd', { result: 'cancelled', reason: 'no target pin found' });
       }
     }
     setPendingCable({ from: null, mouse: null });
