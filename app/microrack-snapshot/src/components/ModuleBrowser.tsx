@@ -66,6 +66,7 @@ function ModuleItem({ meta, onAddModule }: { meta: ModuleMeta, onAddModule: (met
 export default function ModuleBrowser({ onAddModule }: ModuleBrowserProps) {
   const [modules, setModules] = useState<string[]>([])
   const [metas, setMetas] = useState<ModuleMeta[]>([])
+  const [filterText, setFilterText] = useState('')
 
   const { setNodeRef, isOver } = useDroppable({ id: 'module-browser-dropzone' });
 
@@ -83,6 +84,15 @@ export default function ModuleBrowser({ onAddModule }: ModuleBrowserProps) {
     })).then(setMetas)
   }, [modules])
 
+  // Filter modules based on search text
+  const filteredMetas = metas.filter(meta => {
+    if (!filterText.trim()) return true
+    const searchText = filterText.toLowerCase()
+    return meta.name.toLowerCase().includes(searchText) ||
+           meta.slug.toLowerCase().includes(searchText) ||
+           (meta.shortDescription || '').toLowerCase().includes(searchText)
+  })
+
   return (
     <div
       ref={setNodeRef}
@@ -94,8 +104,28 @@ export default function ModuleBrowser({ onAddModule }: ModuleBrowserProps) {
       aria-label="Module Browser (Drop here to delete)"
     >
       <h2 style={{margin: "1em 0 0.5em 0"}}>Modules</h2>
+      <input
+        type="text"
+        placeholder="Filter modules..."
+        value={filterText}
+        onChange={(e) => setFilterText(e.target.value)}
+        style={{
+          width: 'calc(100% - 36px)',
+          padding: '6px',
+          marginBottom: '10px',
+          margin: '0 8px',
+          border: '1px solid #444',
+          borderRadius: '4px',
+          background: '#333',
+          color: '#fff',
+          fontSize: '12px',
+          outline: 'none'
+        }}
+        onFocus={(e) => e.target.style.borderColor = '#61dafb'}
+        onBlur={(e) => e.target.style.borderColor = '#444'}
+      />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {metas.map(meta => <ModuleItem key={meta.slug} meta={meta} onAddModule={onAddModule} />)}
+        {filteredMetas.map(meta => <ModuleItem key={meta.slug} meta={meta} onAddModule={onAddModule} />)}
       </div>
       {isOver && (
         <div style={{
