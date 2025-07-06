@@ -99,7 +99,7 @@ function DraggableModule({ mod, cellSize, margin, gridPadding = 20, onKnobChange
         ref={setNodeRef}
         {...listeners}
         {...attributes}
-        style={{ cursor: 'grab', opacity: isDragging ? 0.5 : 1, width: '100%', height: '100%' }}
+        style={{ cursor: 'grab', opacity: isDragging ? 0.2 : 1, width: '100%', height: '100%' }}
       >
         <svg
           width={mod.width * cellSize + (mod.width - 1) * margin}
@@ -232,9 +232,9 @@ export default function BreadboardSVG({
         preserveAspectRatio="xMidYMid meet"
       >
         {/* Mouse debug label */}
-        {(typeof mouseClientX === 'number' || typeof mouseSvgX === 'number' || typeof mouseCol === 'number') && (
+        {typeof mouseCol === 'number' && (
           <text x={BREADBOARD_GRID_PADDING + 10} y={BREADBOARD_GRID_PADDING - 2} fill="#fff" fontSize={14}>
-            client: ({mouseClientX?.toFixed(1)}, {mouseClientY?.toFixed(1)})  svg: ({mouseSvgX?.toFixed(1)}, {mouseSvgY?.toFixed(1)})  relX: {mouseRelX?.toFixed(1)}  relXc: {mouseRelXClamped?.toFixed(1)}  Col: {mouseCol}
+            Col: {mouseCol}
           </text>
         )}
         {/* Breadboard grid */}
