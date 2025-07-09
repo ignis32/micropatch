@@ -42,7 +42,7 @@ const parsePinId = async (pinId: string, modules: ModuleInstance[]): Promise<str
   const groupTitle = pinGroup.title || `${pinType}.${ioIndex}`;
   const pinNumber = parseInt(pinIndex) + 1; // 1-based for humans
   
-  return `${groupTitle}.${pinNumber}`;
+  return `${groupTitle}.${pinNumber} (${pinType.toUpperCase()})`;
 };
 
 export const generateInstructions = async (
